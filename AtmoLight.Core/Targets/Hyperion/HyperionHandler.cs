@@ -588,9 +588,18 @@ namespace AtmoLight.Targets
         }
 
         IPHostEntry hostEntry = Dns.GetHostEntry(ipOrHostname);
+        string firstIPv4HostEntry = hostEntry.AddressList[0].ToString();
+        foreach(IPAddress entry in hostEntry.AddressList)
+        {
+            if (entry.AddressFamily == AddressFamily.InterNetwork )
+            {
+                firstIPv4HostEntry = entry.ToString();
+                break;
+            }
+        }
 
         // IP address
-        if (hostEntry.AddressList[0].ToString() == ipOrHostname)
+        if (firstIPv4HostEntry == ipOrHostname)
         {
           if (!coreObject.hyperionLiveReconnect)
           {
@@ -600,7 +609,7 @@ namespace AtmoLight.Targets
         // HOSTNAME 
         else
         {
-          string resolvedIP = hostEntry.AddressList[0].ToString();
+          string resolvedIP = firstIPv4HostEntry;
 
           if (string.IsNullOrEmpty(resolvedIP) == false)
           {
